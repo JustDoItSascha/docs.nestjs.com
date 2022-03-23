@@ -29,6 +29,8 @@ The WebSockets module is platform-agnostic, hence, you can bring your own librar
 
 The [socket.io](https://github.com/socketio/socket.io) package is wrapped in an `IoAdapter` class. What if you would like to enhance the basic functionality of the adapter? For instance, your technical requirements require a capability to broadcast events across multiple load-balanced instances of your web service. For this, you can extend `IoAdapter` and override a single method which responsibility is to instantiate new socket.io servers. But first of all, let's install the required package.
 
+> warning **Warning** To use socket.io with multiple load-balanced instances you either have to disable polling by setting `transports: ['websocket']` in your clients socket.io configuration or you have to enable cookie based routing in your load balancer. Redis alone is not enough. See [here](https://socket.io/docs/v4/using-multiple-nodes/#enabling-sticky-session) for more information.
+
 ```bash
 $ npm i --save redis socket.io @socket.io/redis-adapter
 ```
@@ -71,7 +73,6 @@ await redisIoAdapter.connectToRedis();
 app.useWebSocketAdapter(redisIoAdapter);
 
 ```
-
 #### Ws library
 
 Another available adapter is a `WsAdapter` which in turn acts like a proxy between the framework and integrate blazing fast and thoroughly tested [ws](https://github.com/websockets/ws) library. This adapter is fully compatible with native browser WebSockets and is far faster than socket.io package. Unluckily, it has significantly fewer functionalities available out-of-the-box. In some cases, you may just don't necessarily need them though.
